@@ -1,0 +1,93 @@
+# ██████╗ ███████╗██████╗ ███████╗
+# ██╔══██╗██╔════╝██╔══██╗██╔════╝
+# ██████╔╝█████╗  ██████╔╝███████╗
+# ██╔══██╗██╔══╝  ██╔═══╝ ╚════██║
+# ██║  ██║███████╗██║     ███████║
+# ╚═╝  ╚═╝╚══════╝╚═╝     ╚══════╝
+#╔═══════════════════════════════╗
+#║ Rust Efficiency & Performance ║
+#╚═══════════════════════════════╝
+[package]
+name    = "iqdb-eval"
+version = "0.1.0"
+
+# Minimum Supported Rust Version (MSRV)
+rust-version = "1.85"
+edition = "2024"
+
+# License
+license = "Apache-2.0 OR MIT"
+
+# Readme
+readme = "README.md"
+
+# Description
+description = "Benchmarking and evaluation: recall@k, latency, and throughput for vector indexes - part of the iQDB family."
+
+# Keywords (5 max)
+keywords = [
+    "benchmark",
+    "vector-search",
+    "recall",
+    "evaluation",
+    "iqdb"
+]
+
+# Categories
+categories = [
+    "development-tools::profiling",
+    "science"
+]
+
+# Links
+homepage      = "https://github.com/jamesgober/iqdb-eval"
+repository    = "https://github.com/jamesgober/iqdb-eval"
+documentation = "https://docs.rs/iqdb-eval"
+
+# Authors
+authors = [
+    "James Gober <me@jamesgober.com>"
+]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[lib]
+name = "iqdb_eval"
+path = "src/lib.rs"
+
+
+# FEATURE FLAGS
+# #################################
+[features]
+default = ["std"]
+# Standard library.
+std = []
+# Serialization support.
+serde = ["dep:serde"]
+
+
+# DEPENDENCIES
+# #################################
+[dependencies]
+serde = { version = "1", optional = true, default-features = false, features = ["derive", "alloc"] }
+
+
+# DEV DEPENDENCIES
+# #################################
+[dev-dependencies]
+proptest = "1"
+
+[target.'cfg(loom)'.dev-dependencies]
+loom = "0.7"
+
+
+# RELEASE PROFILE
+# #################################
+[profile.release]
+opt-level     = 3
+lto           = "fat"
+codegen-units = 1
+panic         = "abort"
+strip         = "symbols"
