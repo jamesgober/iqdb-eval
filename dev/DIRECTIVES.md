@@ -73,7 +73,7 @@ Tier 1 covers the entire common case in a handful of calls, with no builder and 
 
 ## 8. Project-specific invariants
 
-Stack: Rust edition 2024, MSRV 1.85. Errors via `error-forge`. Tests via `cargo test` + `criterion` + `loom` + `proptest`.
+Stack: Rust edition 2024, MSRV 1.87. Errors via `error-forge`. Tests via `cargo test` + `criterion` + `loom` + `proptest`.
 
 - recall@k must be computed against true top-k, not approximated, or the metric is meaningless.
 - Dataset downloads are cached; huge datasets are never re-downloaded per run.
