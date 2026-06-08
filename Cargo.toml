@@ -9,7 +9,7 @@
 #╚═══════════════════════════════╝
 [package]
 name    = "iqdb-eval"
-version = "0.1.0"
+version = "1.0.0"
 
 # Minimum Supported Rust Version (MSRV)
 rust-version = "1.87"
@@ -46,7 +46,8 @@ documentation = "https://docs.rs/iqdb-eval"
 
 # Authors
 authors = [
-    "James Gober <me@jamesgober.com>"
+    "James Gober <me@jamesgober.com>",
+    "Matt Callahan <matthewcallahan01@icloud.com>"
 ]
 
 [package.metadata.docs.rs]
@@ -61,26 +62,50 @@ path = "src/lib.rs"
 # FEATURE FLAGS
 # #################################
 [features]
-default = ["std"]
-# Standard library.
-std = []
-# Serialization support.
+# Default build: pure measurement surface, no optional dependencies.
+default = []
+# Derive `serde::Serialize` / `Deserialize` on the report types.
 serde = ["dep:serde"]
 
 
 # DEPENDENCIES
 # #################################
 [dependencies]
-serde = { version = "1", optional = true, default-features = false, features = ["derive", "alloc"] }
+# Shared iQDB vocabulary: VectorId, SearchParams, DistanceMetric, Hit, IqdbError.
+iqdb-types  = "1.0.0"
+# The Index / IndexCore traits the harness is generic over.
+iqdb-index  = "1.0.0"
+# Exact brute-force search — the ground-truth oracle for recall@k.
+iqdb-flat   = "1.0.0"
+# `ForgeError` trait: gives `EvalError` the same `kind()` / `caption()` surface
+# `IqdbError` carries, so the two compose into one structured-error event.
+error-forge = "1.0.0"
+# Tracing facade only — one `info_span!` per top-level public function; the
+# per-query measurement loop carries no tracing call.
+tracing     = { version = "0.1", default-features = false, features = ["attributes", "std"] }
+# Optional, additive serialization for the report types.
+serde       = { version = "1", optional = true, default-features = false, features = ["derive", "alloc"] }
 
 
 # DEV DEPENDENCIES
 # #################################
 [dev-dependencies]
-proptest = "1"
+# Property-based tests for the harness invariants.
+proptest   = "1"
+# serde round-trip coverage in tests/serde_roundtrip.rs (under `--all-features`).
+serde_json = "1"
+# Real approximate index for cross-crate validation on the SIFT corpus.
+# DEV-only: iqdb-eval must not depend on a concrete ANN index at runtime.
+iqdb-hnsw  = "1.0.0"
+# Hot-path benchmarks for the recall and latency measurement loops.
+criterion  = { version = "0.5", features = ["html_reports"] }
 
-[target.'cfg(loom)'.dev-dependencies]
-loom = "0.7"
+
+# BENCHMARKS
+# #################################
+[[bench]]
+name    = "eval_bench"
+harness = false
 
 
 # RELEASE PROFILE

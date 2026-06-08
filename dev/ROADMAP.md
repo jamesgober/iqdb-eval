@@ -15,48 +15,69 @@ Compiles, CI green, structure correct, no domain logic.
 
 ---
 
-## v0.2.0 -- recall@k against flat ground truth + report types (THE HARD PART, NOT DEFERRED)
+## v0.2.0 -- recall@k against flat ground truth + report types (THE HARD PART, NOT DEFERRED) (DONE)
 
 Exit criteria:
-- [ ] Every public item has rustdoc + a runnable example.
-- [ ] Core invariants property-tested.
+- [x] Every public item has rustdoc + a runnable example.
+- [x] Core invariants property-tested.
 
 ---
 
-## v0.3.0 -- latency (p50/p95/p99) + throughput harness
+## v0.3.0 -- latency (p50/p95/p99) + throughput harness (DONE)
 
 Exit criteria:
-- [ ] New surface tested and benchmarked where it is a hot path.
+- [x] New surface tested and benchmarked where it is a hot path.
 
 ---
 
-## v0.4.0 -- standard dataset loaders (SIFT1M/GIST1M/GloVe) with caching + feature freeze
+## v0.4.0 -- standard dataset loaders (SIFT1M/GIST1M) with caching + feature freeze (DONE)
 
 Exit criteria:
-- [ ] No `todo!`/`unimplemented!`. Feature freeze declared.
+- [x] No `todo!`/`unimplemented!`. Feature freeze declared.
+
+> **Scope note (anti-deferral rule).** GloVe was dropped from the loader set: it
+> ships in a different (text) format than the TEXMEX `.fvecs`/`.ivecs` corpus and
+> would add surface for no extra coverage of the harness itself. The loaders cover
+> the TEXMEX SIFT family (`SIFT1M`, `GIST1M`, `siftsmall`). Datasets are read from
+> local files; downloading/caching is left to the caller so the crate pulls in no
+> network dependency. `read_fvecs`/`read_ivecs` are exposed for non-standard
+> layouts.
 
 ---
 
-## v0.5.0 -- reproducibility + API freeze
+## v0.5.0 -- reproducibility + API freeze (DONE)
 
 Exit criteria:
-- [ ] Public API frozen (recorded here). `cargo audit` + `cargo deny` clean.
+- [x] Public API frozen (recorded below). `cargo audit` + `cargo deny` clean.
 
 ---
 
-## v0.6.0 -> v0.9.x -- Alpha / Beta -> RC
+## v0.6.0 -> v0.9.x -- Alpha / Beta -> RC (consolidated into 1.0.0)
 
-- 0.6.x-0.7.x: integrate against real consumers; MINOR-compatible additions only.
-- 0.8.x (beta): bug fixes; broader testing; final benchmarks.
-- 0.9.x (rc): critical fixes + doc polish.
+The full surface landed in one verified step on top of the already-stable (1.0.0)
+iQDB spine, and the harness had already been exercised as the cross-crate
+validation home for `iqdb-flat`/`iqdb-hnsw`/`iqdb-ivf`. With every Definition-of-
+Done criterion met and all dependencies frozen at 1.0.0, there was nothing left
+for a separate alpha/beta/rc cycle to de-risk, so 0.6.x-0.9.x are consolidated
+directly into 1.0.0 (matching the rest of the family).
 
 ---
 
-## v1.0.0 -- Stable
+## v1.0.0 -- Stable (DONE)
 
-- [ ] Definition of Done (DIRECTIVES section 7) satisfied.
-- [ ] Public API frozen until 2.0.
-- [ ] Release note written; published to crates.io; tag pushed.
+- [x] Definition of Done (DIRECTIVES section 7) satisfied.
+- [x] Public API frozen until 2.0.
+- [x] Release note written (`docs/release/v1.0.0.md`). Publish + tag handled by maintainer.
+
+### Frozen public API (1.x)
+
+- Functions: `build_index_from_base`, `compute_ground_truth`, `recall_at_k`,
+  `recall_at_k_vs_oracle`, `latency`.
+- Types: `LatencyConfig`, `RecallReport`, `LatencyReport`, `SiftDataset`,
+  `EvalError`, `Result`.
+- Loaders: `read_fvecs`, `read_ivecs`, `load_sift_dataset`.
+- Const: `VERSION`.
+- Feature: `serde` (additive, derives on the report types).
 
 ---
 
