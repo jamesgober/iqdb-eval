@@ -1,6 +1,6 @@
 //! # iqdb-eval
 //!
-//! Index-agnostic evaluation harness for the HiveDB **iqdb** vector-database
+//! Index-agnostic evaluation harness for the **iqdb** vector-database
 //! spine. Measures **recall@k** and **per-query latency percentiles** for
 //! any type that implements [`iqdb_index::IndexCore`].
 //!
