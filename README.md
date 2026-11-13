@@ -207,7 +207,7 @@ cargo run --example recall_quickstart
 
 ## Status
 
-`v1.0.0` is **stable**: recall@k against an exact oracle, latency percentiles
+`v1.0.1` is **stable**: recall@k against an exact oracle, latency percentiles
 and throughput, and the TEXMEX SIFT-family loaders are committed under the SemVer
 1.x guarantee — no breaking changes until 2.0. The surface is covered by unit,
 property-based, differential (against the exact `iqdb-flat` oracle), and

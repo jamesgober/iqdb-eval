@@ -8,13 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Added
-
-### Changed
+Planned as 1.0.1. No API changes.
 
 ### Fixed
 
-### Security
+- `compute_ground_truth` truncated `VectorId::U64` ids above `u32::MAX` to
+  32 bits, so recall was scored against the wrong neighbours. Ground truth is
+  32-bit like the `.ivecs` format, so such an id now returns
+  `EvalError::UnsupportedVectorId` instead.
 
 ---
 
