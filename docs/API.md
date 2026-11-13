@@ -175,7 +175,7 @@ the ground truth.
 **Errors** — [`EvalError::EmptyInput`] when `queries` is empty or `k == 0`;
 [`EvalError::KExceedsCorpus`] when `k > oracle.len()`;
 [`EvalError::DimensionMismatch`] when a query has the wrong dim;
-[`EvalError::UnsupportedVectorId`] when the oracle returns a non-`U64` id;
+[`EvalError::UnsupportedVectorId`] when the oracle returns a non-`U64` id, or a `U64` id above `u32::MAX` (ground truth is 32-bit);
 [`EvalError::Search`] when the oracle's `search` fails.
 
 ```rust

@@ -36,7 +36,8 @@ use crate::report::RecallReport;
 /// - [`EvalError::KExceedsCorpus`] when `k > oracle.len()`.
 /// - [`EvalError::DimensionMismatch`] when any query has the wrong dim.
 /// - [`EvalError::UnsupportedVectorId`] when the oracle returns a hit
-///   whose id is not `VectorId::U64`.
+///   whose id is not `VectorId::U64`, or is a `VectorId::U64` above
+///   `u32::MAX` (ground truth is 32-bit, like the `.ivecs` format).
 /// - [`EvalError::Search`] when the oracle's `search` returns an error.
 ///
 /// # Examples
@@ -96,7 +97,17 @@ pub fn compute_ground_truth<O: IndexCore>(
         let mut row: Vec<u32> = Vec::with_capacity(hits.len());
         for h in hits {
             match h.id {
-                VectorId::U64(u) => row.push(u as u32),
+                // The `.ivecs` ground-truth format is 32-bit; an id past
+                // `u32::MAX` cannot be represented, and truncating it would
+                // silently score the wrong neighbour.
+                VectorId::U64(u) => match u32::try_from(u) {
+                    Ok(id) => row.push(id),
+                    Err(_) => {
+                        return Err(EvalError::UnsupportedVectorId {
+                            found: "VectorId::U64 above u32::MAX",
+                        });
+                    }
+                },
                 _ => {
                     return Err(EvalError::UnsupportedVectorId {
                         found: "VectorId::Bytes",
